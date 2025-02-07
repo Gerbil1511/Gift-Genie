@@ -1,7 +1,8 @@
-# Gifting Genie - A Gift Giving Alert System
+# Gift Genie - A Gift List Platform
 Created by: Phillip Kershaw, Christopher Matthew, Geraldine Edwards and Joanna O'Connor. 
 
-<img width="612" alt="responsive screens landing page for the Gifting Genie app" src="readme.docs/images/responsive_design_landing_page.png">
+<img width="100%" alt="responsive screens landing page for the Gift Genie app" src="readme.docs/images/responsive_design_landing_page.png">
+
 
 
 link to Heroku (live page)
@@ -36,18 +37,12 @@ Gifting Genie is a dynamic and intuitive gifting management web application desi
 
 
 ---
-> 
-
-
-
->
----
 
 ## CONTENTS
 
- - [User experience (UX)](#user-experience)
+ - [User Experience](#user-experience)
      - database planning
-     - purpose and intended audience		 
+     - purpose and intended audience     
      - user stories
  - [Creation process](#creation-process)
      - [Wireframes](#wireframes)
@@ -64,8 +59,10 @@ Gifting Genie is a dynamic and intuitive gifting management web application desi
  - [Testing](#testing)
  - [Credits](#credits)
  ---
- ## Gifting-Genie USER EXPERIENCE
- ---
+ <br>
+
+ ## USER EXPERIENCE
+
 
 **User Model**
 The User model is the standard Django Allauth model
@@ -81,6 +78,7 @@ PURPOSE
 Gifting-Genie is designed to simplify and enhance the experience of managing events, gift wishlists, and social connections. Its primary goal is to provide users with an efficient, user-friendly platform to keep track of important dates, desired gifts, and their network of friends. By integrating event management, wishlist tracking, and friend interactions in a single application, Gifting-Genie aims to make gift-giving and event planning more organized and enjoyable.
 
 INTENDED AUDIENCE
+
 - Gifting-Genie caters to a diverse audience, including:
 - Individuals: Anyone looking to manage their personal events, keep a list of gift ideas, and connect with friends to share and view wishlists and event details.
 - Families and Friends: Groups of users who want to coordinate gift-giving and event planning within their social circles, ensuring everyone is on the same page for special occasions.
@@ -90,7 +88,7 @@ INTENDED AUDIENCE
 By addressing the needs of these varied user groups, Gifting-Genie aims to create a cohesive and interactive experience that brings people together through thoughtful event planning and gift-giving.
 
 **Gifting-Genie User stories**
-		 
+     
 Title | User story | MoSCoW prioritisation |
 --- | --- | --- |
 **Account Registration** | As a **site user** I want to **register an account** so that I can **login and access my personalized dashboard.** | Must have |
@@ -103,6 +101,11 @@ Title | User story | MoSCoW prioritisation |
 **View Friend's Profile** | As a **registered user** I want to **view my friend's profile** so that I can **see their events and wishlist.** | Should have |
 **View Friend's Profile** | As a **registered user** I want to **view my friend's profile** so that I can **see their events and wishlist.** | Could have |
 
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
+
+---
+
+### CREATION PROCESS
   
 We used [GitHub Projects](https://github.com/users/Philgck/projects/13) to create a project board and populated it with user stories and added labels according to MoSCoW prioritisation.
 All but one of the 'must have' user stories were completed with any other issues being carried over to the next sprint of the project development.
@@ -146,6 +149,10 @@ Each user story had acceptance criteria added.The fulfillment of the criteria fo
 - Community Building:
   - Site owners want to foster a strong community of users.
   - Site owners aim to create engagement opportunities such as forums, newsletters, and social media integration. (FUTURE FEATURE)
+
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
+
+---
 
 ## CREATION PROCESS
 
@@ -195,6 +202,7 @@ The website features a consistent layout and styling across all pages, ensuring 
 - **Footer**: The footer is consistent across all pages and includes links to social media apps Facebook, X (formerly Twitter), Instagram and Pintrest. The styling is cohesive across all pages to give a cohesive look and feel across all pages.
    
  ---
+ <p align="right"><a href="#contents">Back To Table of Contents</a></p>
 
 ## WEBSITE FEATURES 
 
@@ -252,7 +260,7 @@ The website features a consistent layout and styling across all pages, ensuring 
   Each user-associated wishlist contains user-added items. Users can edit/delete items on their wishlist. 
   
 
-<br> -->
+<br> 
 
 **FRIENDS LIST VIEW**
   <details>
@@ -263,9 +271,7 @@ The website features a consistent layout and styling across all pages, ensuring 
   </details>
   Each user-associated wishlist contains user-added items. Users can edit/delete items on their wishlist. 
   
-<br> -->
-
----
+<br>
 
 ## FUTURE FEATURES
 The following would be options to consider including in future versions of the website:
@@ -276,6 +282,12 @@ The following would be options to consider including in future versions of the w
   - Requested friends can receive notifications (via a preferred method eg email or in-app) when other users edit their wishlist to indicate intention of purchase. 
   - Friends can receive notifications (via a preferred method eg email or in-app) that another friend has created a new event or wishlist. 
     
+
+
+---
+
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
+
 
 ## TECHNOLOGIES USED
 
@@ -330,11 +342,9 @@ The following would be options to consider including in future versions of the w
 
  ---
 
-### AI AUGMENTATION 
-## Leveraging AI Tools for Code Creation ##
-Collecting workspace information
+ <p align="right"><a href="#contents">Back To Table of Contents</a></p>
 
-Certainly! Here is a detailed description of how AI has been used in this project for the specified sections in the README:
+### AI AUGMENTATION 
 
 ### Leveraging AI Tools for Code Creation
 During the development of the Gifting Genie app, GitHub Copilot was utilized to assist in code creation. Copilot provided valuable code snippets and suggestions that accelerated the development process. Key areas where AI was used include:
@@ -367,6 +377,9 @@ In addition to GitHub Copilot, other AI tools were leveraged in much lesser form
 ### Reflection on AI Tools
 Using GitHub Copilot and other AI tools significantly enhanced the development process by providing relevant code snippets and suggestions. They accelerated the initial coding phase, assisted in debugging, and ensured comprehensive test coverage. However, it was essential to manually review and adjust the generated code to ensure it met the project's specific requirements and maintained high standards of quality and performance. Copilot can occasionally repeat itself despite clear prompts, as if it 'forgets' the previous steps or the focus of the initial query, which can be time-consuming. It is crucial to know when to manually take over reviewing the code.
 
+---
+
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
 
 ## DEPLOYMENT of Gifting-Genie
 The site was deployed to Heroku. The steps to deploy are as follows:
@@ -390,7 +403,9 @@ Navigate to Deploy tab
    
 
 
- ---
+---
+
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
 
 ## TESTING
 
@@ -433,7 +448,9 @@ We were delighted that our recent Lighthouse audit yielded excellent performance
 
 We adopted an agile methodology using a GitHub project board, applying MoSCoW prioritization to manage my tasks. The board was regularly updated to ensure all 'Must have' and 'Should have' features were addressed. Some 'Could have' issues remain in the backlog for future sprints, as detailed in the 'Future Features' section below.
 
+---
 
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
 
 ## CREDITS
 
@@ -458,4 +475,4 @@ We adopted an agile methodology using a GitHub project board, applying MoSCoW pr
 - Code Institute SME Coach John Rearden for coding advice
 - Code Institue Coding Coach Ruairidh MacArthur for GIT advice
 
-
+<p align="right"><a href="#contents">Back To Table of Contents</a></p>
