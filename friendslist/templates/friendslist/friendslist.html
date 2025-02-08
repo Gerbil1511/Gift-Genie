@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="app-container mt-5 d-flex flex-column flex-grow-1 align">
-    <h1 class="main-title-text">Friends List</h1>
+    <h1 class="main-title-text">My Friends List</h1>
     {% if user.is_authenticated %}
     {% if messages %}
     <ul class="messages">
@@ -29,7 +29,7 @@
             <label for="search_query" class="form-label">Search Username:</label>
             <div class="input-group">
                 <input type="text" id="search_query" class="form-control" placeholder="Search for a username">
-                <button type="button" id="search-button" class="btn btn-primary">Search</button>
+                <button type="button" id="search-button" class="btn btn-log">Search</button>
             </div>
         </div>
         <div class="mb-3">
@@ -38,7 +38,7 @@
                 placeholder="Enter friend's username">
             <datalist id="username-suggestions"></datalist>
         </div>
-        <button type="submit" class="btn btn-primary">Add Friend</button>
+        <button type="submit" class="btn btn-log">Add Friend</button>
     </form>
 
     <div class="container mt-5">
