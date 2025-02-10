@@ -5,7 +5,7 @@ Updated version by Geraldine Edwards (Orginally created as a hackathon project n
 
 
 
-link to Heroku (live page - work in progress)
+Link to Heroku (live page - work in progress)
 > [View live project here](https://giftgenie-d76f169537ec.herokuapp.com)
 
 Github link 
