@@ -1,12 +1,12 @@
 # Gift Genie - A Gift List Platform
-Created by: Phillip Kershaw, Christopher Matthew, Geraldine Edwards and Joanna O'Connor. 
+Updated version by Geraldine Edwards (Orginally created by: Phillip Kershaw, Christopher Matthew, Geraldine Edwards and Joanna O'Connor). 
 
 <img width="100%" alt="responsive screens landing page for the Gift Genie app" src="readme.docs/images/responsive_design_landing_page.png">
 
 
 
 link to Heroku (live page)
-> [View live project here](https://gift-genie-bb00e28764e5.herokuapp.com/)
+> [View live project here](https://giftgenie-d76f169537ec.herokuapp.com)
 
 Github link 
 > [view Github repo here](https://github.com/Philgck/gifting-genie-two)
