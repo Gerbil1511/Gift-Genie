@@ -5,11 +5,12 @@ Updated version by Geraldine Edwards (Orginally created by: Phillip Kershaw, Chr
 
 
 
-link to Heroku (live page)
+link to Heroku (live page - work in progress)
 > [View live project here](https://giftgenie-d76f169537ec.herokuapp.com)
 
 Github link 
-> [view Github repo here](https://github.com/Philgck/gifting-genie-two)
+> [view Work In Progress Github repo here](https://github.com/Gerbil1511/Gift-Genie)
+> [view original Github repo here](https://github.com/Philgck/gifting-genie-two)
 > 
 
 Gifting Genie is a dynamic and intuitive gifting management web application designed to help authenticated users manage their events and wishlist items, and connect with their friends to share and view profiles. Built with HTML, CSS, JavaScript, and Django, this app aims to streamline the process of organizing events, tracking desired gifts, and maintaining connections with friends, all in one place. Whether planning a birthday party, keeping track of gift ideas, or checking a friend's wishlist, Gifting Genie makes the experience seamless and enjoyable. Gifting Genie simplifies the process of managing gift lists and events while maintaining a social network of friends to share and celebrate with.
