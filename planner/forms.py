@@ -1,7 +1,7 @@
 from django import forms
 from .models import Planner
 
-class PlannerForm(forms.ModelForm):
+class EventForm(forms.ModelForm):
     class Meta:
         model = Planner
         fields = ['event_name', 'description', 'event_date', 'event_time']

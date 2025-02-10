@@ -3,21 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<!-- Display Django messages (success, error, etc.) -->
-{% if messages %}
-    <div class="container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
 
-<!-- Main content -->
 <div class="container-fluid p-0 flex-grow-1 d-flex">
     <div class="container mt-5 d-flex flex-column flex-grow-1">
         <div class="row flex-grow-1 d-flex">
@@ -30,22 +16,43 @@
                     <img src="https://res.cloudinary.com/dqm93egis/image/upload/v1738488445/nobody_l7bbqh.jpg"
                         class="rounded-circle img-fluid" alt="placeholder image">
                     {% endif %}
-                    <div class="edit-profile-picture" data-bs-toggle="modal" data-bs-target="#uploadProfilePictureModal">
+                    <div class="edit-profile-picture" data-bs-toggle="modal"
+                        data-bs-target="#uploadProfilePictureModal">
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6 profile-content-container d-flex flex-column flex-grow-1">
-                <h2>{{ myaccount.title }}</h2>
+
                 {{ myaccount.content | safe }}
                 <div class="col-12 my-5 flex-grow-1">
                     <div class="text-container">
                         <h2>Welcome {{ myaccount.user.username }} to your page</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+                        <div class="profile-info">
+
+                            <h2>{{ my_account.title }}</h2>
+                            <p>{{ my_account.status_message }}</p>
+                            <p>{{ my_account.about_me }}</p>
+                            <p>Birthday: {{ my_account.birthday }}</p>
+                            <p>Favorite Links: {{ my_account.favorite_links }}</p>
+                        </div>
+                        <h2>Likes</h2>
+                        <ul class="list-group">
+                            {% for like in likes %}
+                            <li class="list-group-item">
+                                {% if like.event %}
+                                <i class="fas fa-calendar-alt"></i> {{ like.user.username }} likes {{ like.event.title
+                                }}
+                                {% elif like.wishlist_item %}
+                                <i class="fas fa-gift"></i> {{ like.user.username }} likes {{
+                                like.wishlist_item.item_name }}
+                                {% else %}
+                                <i class="fas fa-heart"></i> {{ like.user.username }} likes an item
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -59,7 +66,8 @@
 </div>
 
 <!-- Modal for Uploading Profile Picture -->
-<div class="modal fade" id="uploadProfilePictureModal" tabindex="-1" aria-labelledby="uploadProfilePictureModalLabel" aria-hidden="true">
+<div class="modal fade" id="uploadProfilePictureModal" tabindex="-1" aria-labelledby="uploadProfilePictureModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

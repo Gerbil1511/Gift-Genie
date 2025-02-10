@@ -34,9 +34,9 @@ class MyAccount(models.Model):
         super().save(*args, **kwargs)
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Planner, on_delete=models.CASCADE, null=True, blank=True)
-    wishlist_item = models.ForeignKey(WishlistItem, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    event = models.ForeignKey(Planner, on_delete=models.CASCADE, null=True, blank=True, related_name='likes')
+    wishlist_item = models.ForeignKey(WishlistItem, on_delete=models.CASCADE, null=True, blank=True, related_name='likes')
     created_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:

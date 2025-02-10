@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="app-container mt-5">
-    <h1 class="main-title-text">My Planner</h1>
+    <!-- <h1 class="main-title-text">My Events Planner</h1>
     <div id="calendar"></div>
     <a href="{% url 'planner:add_event' %}" class="btn btn-log mb-4">Add Event</a>
     <div class="scrollable-container" style="border: 1px solid #ccc; padding: 10px;">
@@ -20,6 +20,53 @@
             </li>
             {% endfor %}
         </ul>
-    </div>
+    </div> -->
+
+    <h1>My Events Planner</h1>
+    <div id="calendar"></div>
+    <a href="{% url 'planner:add_event' %}" class="btn btn-primary mt-3">Add Event</a>
+</div>
+<!-- Include FullCalendar CSS and JS from CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            events: [
+            {% for event in user_events %}
+            {
+                title: '{{ event.event_name }}',
+                start: '{{ event.event_date }}T{{ event.event_time }}',
+                url: '{% url "wishlist:wishlist_detail" event.wishlist.id %}',
+                color: 'blue',
+                description: '{{ event.description }}'
+            },
+            {% endfor %}
+            {% for event in friends_events %}
+            {
+                title: '{{ event.user.username }}: {{ event.event_name }}',
+                start: '{{ event.event_date }}T{{ event.event_time }}',
+                url: '{% url "profile" event.user.id %}',
+                color: 'green',
+                description: '{{ event.description }}'
+            },
+            {% endfor %}
+        ],
+        eventRender: function(info) {
+            tippy(info.el, {
+                content: info.event.extendedProps.description,
+                placement: 'top',
+                trigger: 'mouseenter',
+                theme: 'light',
+            });
+        }
+    });
+    calendar.render();
+});
+</script>
 </div>
 {% endblock %}
