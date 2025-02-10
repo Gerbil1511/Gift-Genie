@@ -7,6 +7,7 @@ from .models import Friendship
 from .forms import AddFriendForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.contrib import messages
 from planner.models import Planner
 from wishlist.models import WishlistItem
@@ -42,6 +43,20 @@ class FriendshipListView(ListView):
         return Friendship.objects.filter(
             user=self.request.user, confirmed=True
             )
+
+
+def create_friendship(request):
+    if request.method == 'POST':
+        user = request.user
+        friend_id = request.POST.get('friend_id')
+        friend = User.objects.get(id=friend_id)
+        friendship = Friendship(user=user, friend=friend)
+        try:
+            friendship.save()
+            return redirect('success_url')
+        except ValidationError as e:
+            return render(request, 'friendship_form.html', {'error': e.message})
+    return render(request, 'friendship_form.html')
 
 
 def confirm_friendship(request, friendship_id):
