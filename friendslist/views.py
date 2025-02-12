@@ -1,56 +1,45 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib import messages
+from django.urls import reverse
 from .models import Friendship
 from .forms import AddFriendForm
 from planner.models import Planner
 from wishlist.models import WishlistItem
 
-def search_usernames(request):
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        query = request.GET.get('term', '')
-        users = User.objects.filter(username__icontains=query)
-        results = [
-            {
-                'username': user.username,
-                'profile_image': user.myaccount.profile_image.url if user.myaccount.profile_image else ''
-            }
-            for user in users
-        ]
-        return JsonResponse(results, safe=False)
-    return JsonResponse([], safe=False)  # If it's not an AJAX request, return an empty list
-
-@login_required
 def friendship_list(request):
     friendships = Friendship.objects.filter(user=request.user, confirmed=True)
     pending_friendships = Friendship.objects.filter(friend=request.user, confirmed=False)
     form = AddFriendForm(user=request.user)
+    
+    search_query = request.GET.get('search_query', '').strip()
+    search_results = []
+
+    if search_query:
+        search_results = User.objects.filter(username__icontains=search_query).exclude(id=request.user.id)[:5]
+
     return render(request, 'friendslist/friendslist.html', {
         'friendships': friendships,
         'pending_friendships': pending_friendships,
-        'form': form
+        'form': form,
+        'search_results': search_results,
+        'search_query': search_query,  # To keep the input field populated
     })
 
 @login_required
 def add_friend(request):
     if request.method == 'POST':
-        form = AddFriendForm(request.POST, user=request.user)
-        if form.is_valid():
-            friend_username = form.cleaned_data['friend_username']
-            friend = User.objects.get(username=friend_username)
+        friend_id = request.POST.get('friend_id')
+        if friend_id:
+            friend = User.objects.get(id=friend_id)
             Friendship.objects.create(user=request.user, friend=friend)
-            return redirect('friendslist')  # Redirect to the friends list page
+            messages.success(request, f"Friend request sent to {friend.username}.")
         else:
-            # Add an error message if the form is invalid
-            for error in form.errors.values():
-                messages.error(request, error)
-            return redirect('friendslist')
-    else:
-        form = AddFriendForm(user=request.user)
-    return render(request, 'friendslist/add_friend.html', {'form': form})
+            messages.error(request, "Something went wrong. Please try again.")
+        return redirect('friendslist')
 
 @login_required
 def friendsdetail(request, friend_id):

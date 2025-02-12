@@ -11,28 +11,61 @@
         <li class="list-group-item d-flex align-items-center">
             <a href="{% url 'friendsdetail' friendship.friend.id %}" class="d-flex align-items-center">
                 {% if friendship.friend.myaccount.profile_image %}
-                <img src="{{ friendship.friend.myaccount.profile_image.url }}" alt="{{ friendship.friend.username }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                <img src="{{ friendship.friend.myaccount.profile_image.url }}" alt="{{ friendship.friend.username }}"
+                    class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
                 {% else %}
-                <img src="https://res.cloudinary.com/dqm93egis/image/upload/v1738488445/nobody_l7bbqh.jpg" alt="{{ friendship.friend.username }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                <img src="https://res.cloudinary.com/dqm93egis/image/upload/v1738488445/nobody_l7bbqh.jpg"
+                    alt="{{ friendship.friend.username }}" class="rounded-circle"
+                    style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
                 {% endif %}
                 <span>{{ friendship.friend.username }}</span>
             </a>
         </li>
         {% endfor %}
     </ul>
-    
-    <form method="post" action="{% url 'add_friend' %}" class="w-100">
-        {% csrf_token %}
+
+    <!-- <form method="get" action="{% url 'friendslist' %}" class="w-100 mb-3">
         <div class="input-group mb-3">
             {{ form.search_query|as_crispy_field }}
             <button type="button" id="search-button" class="btn btn-baby-blue">Search</button>
         </div>
-        <!-- This div will be populated with search results -->
+        
         <div id="search-results" class="mb-3"></div>
         {{ form.friend_username|as_crispy_field }}
         <button type="submit" class="btn btn-primary btn-log">Add Friend</button>
+    </form> -->
+
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'friendslist' %}" class="mb-3">
+        <input type="text" name="search_query" id="search_query" placeholder="Search usernames..."
+            value="{{ search_query }}" class="form-control d-inline-block w-50">
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
+    <!-- Display Search Results -->
+    {% if search_results %}
+    <div class="mt-3">
+        <h5>Search Results:</h5>
+        {% for user in search_results %}
+        <div class="d-flex align-items-center mb-2">
+            <img src="{{ user.myaccount.profile_image.url|default:'https://res.cloudinary.com/dqm93egis/image/upload/v1738488445/nobody_l7bbqh.jpg' }}"
+                class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
+            <span>{{ user.username }}</span>
+            <!-- Hidden form for adding friend -->
+            <form class="add-friend-form" method="POST" action="{% url 'add_friend' %}">
+                {% csrf_token %}
+                <input type="hidden" name="friend_id" value="{{ user.id }}">
+                <button type="submit" class="btn-rounded add-friend-btn">Add Friend</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif search_query %}
+    <div class="mt-3">
+        <p>No registered user found with that username.</p>
+    </div>
+    {% endif %}
     <div class="container mt-5">
         <h2 class="title-text">Pending Friend Requests</h2>
         <ul class="list-group">
@@ -43,7 +76,7 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-rounded btn-baby-blue">Confirm</button>
                 </form>
-                
+
             </li>
             {% endfor %}
         </ul>
