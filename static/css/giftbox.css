@@ -8,11 +8,13 @@
     justify-content: center;
     align-items: center;
     left: 50%;
+    top: -55%;
     transform: translate(-50%, -80%);
     z-index: 5;
 }
 
 .call-to-action {
+    background-color: rgba(0, 0, 0, 0.5); 
     color: var(--bs-white);
     font-size: 50px;
     text-align: center;
@@ -49,12 +51,13 @@
     border-bottom-right-radius: 5%;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.3);
     background: linear-gradient(#762c2c, #ff0303);
+    will-change: transform;
 }
 
 .box-body .img {
     opacity: 0;
     transform: translateY(0%);
-    transition: all 0.5s;
+    transition: all 0.5s ease-in-out;
     margin: 0 auto;
     display: block;
 }
@@ -111,6 +114,7 @@
     width: 220px;
     border-radius: 5%;
     box-shadow: 0 8px 4px -4px rgba(0, 0, 0, 0.3);
+    will-change: transform;
 }
 
 .box-lid::after {

@@ -8,7 +8,6 @@ from wishlist.models import WishlistItem
 class MyAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_image = CloudinaryField('image', null=True, blank=True)
-    title = models.CharField(max_length=100, blank=True, null=True)
     status_message = models.CharField(max_length=255, blank=True, null=True)
     about_me = models.TextField(blank=True, null=True)
     favorite_links = models.TextField(blank=True, null=True)
@@ -23,11 +22,7 @@ class MyAccount(models.Model):
         ordering = ['-created_on']
 
     def __str__(self):
-        return f"{self.user.username} - {self.title or 'No Title'}"
-
-    def clean(self):
-        if not self.title:
-            raise ValidationError("The title field cannot be empty.")
+        return f"{self.user.username}"
 
     def save(self, *args, **kwargs):
         self.clean()

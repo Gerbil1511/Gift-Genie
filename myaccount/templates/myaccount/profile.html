@@ -27,11 +27,11 @@
                 {{ myaccount.content | safe }}
                 <div class="col-12 my-5 flex-grow-1">
                     <div class="text-container">
-                        <h2>Welcome {{ myaccount.user.username }} to your page</h2>
+                        <h2>Welcome to your page {{ myaccount.user.username }} </h2>
 
                         <div class="profile-info">
 
-                            <h2>{{ my_account.title }}</h2>
+                            
                             <p>{{ my_account.status_message }}</p>
                             <p>{{ my_account.about_me }}</p>
                             <p>Birthday: {{ my_account.birthday }}</p>
@@ -59,7 +59,7 @@
         </div>
         <div class="row">
             <div class="col text-right">
-                <p class="text-end"><em>Updated on: {{ myaccount.updated_on }}</em></p>
+                <p class="text-end"><em>Last updated on: {{ myaccount.updated_on }}</em></p>
             </div>
         </div>
     </div>

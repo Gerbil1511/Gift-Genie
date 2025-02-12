@@ -1,44 +1,36 @@
 {% extends "base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<div class="app-container mt-5 d-flex flex-column flex-grow-1 align">
+<div class="app-container">
     <h1 class="main-title-text">My Friends List</h1>
     {% if user.is_authenticated %}
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-            {% endfor %}
-    </ul>
-    {% endif %}
-    <ul>
+    <ul class="list-group">
         {% for friendship in friendships %}
-        <li>
-            <a href="{% url 'friendsdetail' friendship.friend.id %}">
-                {{ friendship.user.username }} is friends with {{ friendship.friend.username }}
+        <li class="list-group-item d-flex align-items-center">
+            <a href="{% url 'friendsdetail' friendship.friend.id %}" class="d-flex align-items-center">
+                {% if friendship.friend.myaccount.profile_image %}
+                <img src="{{ friendship.friend.myaccount.profile_image.url }}" alt="{{ friendship.friend.username }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                {% else %}
+                <img src="https://res.cloudinary.com/dqm93egis/image/upload/v1738488445/nobody_l7bbqh.jpg" alt="{{ friendship.friend.username }}" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
+                {% endif %}
+                <span>{{ friendship.friend.username }}</span>
             </a>
         </li>
         {% endfor %}
     </ul>
-
-    <h2 class="title-text">Add a Friend</h2>
+    
     <form method="post" action="{% url 'add_friend' %}" class="w-100">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="search_query" class="form-label">Search Username:</label>
-            <div class="input-group">
-                <input type="text" id="search_query" class="form-control" placeholder="Search for a username">
-                <button type="button" id="search-button" class="btn btn-log">Search</button>
-            </div>
+        <div class="input-group mb-3">
+            {{ form.search_query|as_crispy_field }}
+            <button type="button" id="search-button" class="btn btn-baby-blue">Search</button>
         </div>
-        <div class="mb-3">
-            <label for="id_friend_username" class="form-label">Friend Username:</label>
-            <input list="username-suggestions" id="id_friend_username" name="friend_username" class="form-control"
-                placeholder="Enter friend's username">
-            <datalist id="username-suggestions"></datalist>
-        </div>
-        <button type="submit" class="btn btn-log">Add Friend</button>
+        <!-- This div will be populated with search results -->
+        <div id="search-results" class="mb-3"></div>
+        {{ form.friend_username|as_crispy_field }}
+        <button type="submit" class="btn btn-primary btn-log">Add Friend</button>
     </form>
 
     <div class="container mt-5">
@@ -49,8 +41,9 @@
                 {{ friendship.user.username }} wants to be friends with you
                 <form method="post" action="{% url 'confirm_friendship' friendship.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Confirm</button>
+                    <button type="submit" class="btn btn-rounded btn-baby-blue">Confirm</button>
                 </form>
+                
             </li>
             {% endfor %}
         </ul>
@@ -63,8 +56,5 @@
 
 {% block extra_body %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    var searchUsernamesUrl = "{% url 'search-usernames' %}";
-</script>
 <script src="{% static 'js/friendsearch.js' %}"></script>
 {% endblock extra_body %}

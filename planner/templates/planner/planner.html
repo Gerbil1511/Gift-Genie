@@ -1,72 +1,124 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-<div class="app-container mt-5">
-    <!-- <h1 class="main-title-text">My Events Planner</h1>
-    <div id="calendar"></div>
-    <a href="{% url 'planner:add_event' %}" class="btn btn-log mb-4">Add Event</a>
-    <div class="scrollable-container" style="border: 1px solid #ccc; padding: 10px;">
-        <ul class="list-group">
-            {% for event in events %}
-            <li class="list-group-item">
-                <h5>{{ event.event_name }}</h5>
-                <p>{{ event.description }}</p>
-                <p>{{ event.event_date }} - {{ event.event_time }}</p>
-                <div class="mt-2">
-                    <a href="{% url 'planner:edit_event' event.id %}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="{% url 'planner:delete_event' event.id %}" class="btn btn-danger btn-sm">Delete</a>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div> -->
-
-    <h1>My Events Planner</h1>
-    <div id="calendar"></div>
-    <a href="{% url 'planner:add_event' %}" class="btn btn-primary mt-3">Add Event</a>
+<div class="container">
+    <div class="app-container">
+        <h1 clas="main-title-text">My Events Planner</h1>
+        <div id="calendar-container">
+            <div id="calendar"></div>
+        </div>
+    </div>
 </div>
-<!-- Include FullCalendar CSS and JS from CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-<script src="https://unpkg.com/@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
+{% endblock %}
+
+{% block extra_body %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            selectable: true,
+            editable: true,
             events: [
-            {% for event in user_events %}
-            {
+                {% for event in user_events %}
+                {
+                id: '{{ event.id }}',
                 title: '{{ event.event_name }}',
                 start: '{{ event.event_date }}T{{ event.event_time }}',
-                url: '{% url "wishlist:wishlist_detail" event.wishlist.id %}',
-                color: 'blue',
-                description: '{{ event.description }}'
+                description: '{{ event.description }}',
+                color: 'blue'
             },
             {% endfor %}
-            {% for event in friends_events %}
-            {
-                title: '{{ event.user.username }}: {{ event.event_name }}',
+                {% for event in friends_events %}
+    {
+        id: '{{ event.id }}',
+            title: '{{ event.user.username }}: {{ event.event_name }}',
                 start: '{{ event.event_date }}T{{ event.event_time }}',
-                url: '{% url "profile" event.user.id %}',
-                color: 'green',
-                description: '{{ event.description }}'
-            },
-            {% endfor %}
-        ],
-        eventRender: function(info) {
-            tippy(info.el, {
-                content: info.event.extendedProps.description,
-                placement: 'top',
-                trigger: 'mouseenter',
-                theme: 'light',
-            });
+                    description: '{{ event.description }}',
+                        color: 'green'
+    },
+    {% endfor %}
+            ],
+    eventClick: function(info) {
+        var eventObj = info.event;
+        var title = prompt('Edit event title:', eventObj.title);
+        if (title) {
+            eventObj.setProp('title', title);
+            // Send AJAX request to update event in the backend
+            updateEvent(eventObj);
         }
-    });
+    },
+    select: function(info) {
+        var title = prompt('Enter event title:');
+        if (title) {
+            var eventData = {
+                title: title,
+                start: info.startStr,
+                end: info.endStr
+            };
+            calendar.addEvent(eventData);
+            // Send AJAX request to add event to the backend
+            addEvent(eventData);
+        }
+        calendar.unselect();
+    },
+    eventDrop: function(info) {
+        // Send AJAX request to update event in the backend
+        updateEvent(info.event);
+    },
+    eventResize: function(info) {
+        // Send AJAX request to update event in the backend
+        updateEvent(info.event);
+    }
+        });
     calendar.render();
-});
+
+    function addEvent(eventData) {
+        fetch("{% url 'planner:add_event' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(eventData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Event added successfully!');
+                } else {
+                    alert('Failed to add event.');
+                }
+            });
+    }
+
+    function updateEvent(event) {
+        fetch("{% url 'planner:edit_event' event_id=0 %}".replace('0', event.id), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                title: event.title,
+                start: event.start.toISOString(),
+                end: event.end ? event.end.toISOString() : null
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Event updated successfully!');
+                } else {
+                    alert('Failed to update event.');
+                }
+            });
+    }
+    });
 </script>
-</div>
 {% endblock %}
