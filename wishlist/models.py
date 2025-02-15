@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-# Create your models here.
+import requests
 
 
 class WishlistItem(models.Model):
@@ -14,24 +13,27 @@ class WishlistItem(models.Model):
     def __str__(self):
         return self.item_name
 
-        Field('thumbnail_url', placeholder='Thumbnail URL'),
-
-
-def save(self, commit=True):
-        instance = super().save(commit=False)
-        if not instance.thumbnail_url and instance.link:
-            instance.thumbnail_url = self.fetch_thumbnail_url(instance.link)
-        if commit:
-            instance.save()
-        return instance
 
 def fetch_thumbnail_url(self, url):
-        try:
-            response = requests.get(url)
-            soup = BeautifulSoup(response.content, 'html.parser')
-            og_image = soup.find('meta', property='og:image')
-            if og_image and og_image['content']:
-                return og_image['content']
-        except Exception as e:
-            print(f"Error fetching thumbnail: {e}")
-        return ''
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        # Parse the response to find the Open Graph image URL
+        start = response.text.find(
+            '<meta property="og:image" content="') + len('<meta property="og:image" content="')
+        end = response.text.find('"', start)
+        og_image_url = response.text[start:end]
+        return og_image_url
+    except requests.RequestException as e:
+        print(f"Request error: {e}")
+    except Exception as e:
+        print(f"Error fetching thumbnail: {e}")
+    return ''
+
+def save(self, *args, **kwargs):
+    if not self.thumbnail_url and self.link:
+        self.thumbnail_url = self.fetch_thumbnail_url(self.link)
+    super().save(*args, **kwargs)

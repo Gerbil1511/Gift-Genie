@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Add Wishlist Item</h2>
-    <form method="post" id="wishlist-form" class="d-flex flex-column">
+    <form method="post" id="wishlist-form" class="d-flex flex-column" action="{% url 'wishlist:add_wishlist_item' %}">
         {% csrf_token %}
         <div class="d-flex mb-3">
             {{ form.item_name|as_crispy_field }}

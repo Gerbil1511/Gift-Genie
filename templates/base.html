@@ -24,10 +24,10 @@
     <link rel="stylesheet" href="{% static 'css/giftbox.css' %}" />
 </head>
 
-<body>
+<body class="{% if request.COOKIES.dark_mode == 'true' %}dark-mode{% endif %}">
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: var(--bs-primary);">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'images/gift-genie-white.png' %}" alt="Gift Genie Logo" height="40">
                 <span class="ms-2">Gift Genie</span>
             </a>
@@ -36,22 +36,31 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link trans-text" href="{% url 'myaccount:myaccount_home' %}">
+                            {% if user.myaccount.profile_image %}
+                            <img src="{{ user.myaccount.profile_image.url }}" alt="Profile Image"
+                                class="rounded-circle profile-image" />
+                            {% else %}
+                            <img src="https://res.cloudinary.com/dn7aws3wl/image/upload/v1739390582/nobody_pcaqjl.jpg"
+                                alt="Profile Image" class="rounded-circle profile-image" height="40">
+                            {% endif %}
+                            <span class="">{{ user.username }}</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'friendslist' %}">Friends</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'wishlist' %}">Wishlist</a>
+                        <a class="nav-link" href="{% url 'wishlist:wishlist' %}">Wishlist</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'planner:planner_view' %}">Event Planner</a>
                     </li>
-                    {% if user.is_authenticated %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <img src="https://res.cloudinary.com/dn7aws3wl/image/upload/v1739390582/nobody_pcaqjl.jpg"
-                            alt="Profile Image" class="rounded-circle profile-image" height="40">
                     </li>
                     {% else %}
                     <li class="nav-item">
