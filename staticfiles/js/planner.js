@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Declare calendar variable outside the fetch scope
     let calendar;
     const calendarEl = document.getElementById('calendar');
@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get modal and form elements
     const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
     const eventForm = document.getElementById('eventForm');
+    const allDayCheckbox = document.getElementById('allDayCheckbox');
     const eventTitle = document.getElementById('eventTitle');
     const eventStart = document.getElementById('eventStart');
     const eventEnd = document.getElementById('eventEnd');
@@ -14,44 +15,78 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveEventButton = document.getElementById('saveEvent');
     const deleteEventButton = document.getElementById('deleteEvent');
 
-    // Initialize calendar and load events
-    fetch('/planner/get-events/')  // Match the URL in your Django urls.py
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                editable: true,
-                selectable: true,
-                events: data.events.map(event => ({
-                    id: event.id,
-                    title: event.title,
-                    start: event.start,
-                    end: event.end,
-                    color: event.user === event.is_friend ? '#3788d8' : '#6c757d', // Color coding
-                    extendedProps: {
-                        description: event.description || '' // Store description for later use
-                    }
-                })),
-                dateClick: function(info) {
-                    openModal(null, info.dateStr);
-                },
-                eventClick: function(info) {
-                    console.log("event clicked:", info.event);
-                    openModal(info.event);
-                }
-            });
-            calendar.render();
-        })
-        .catch(error => {
-            console.error('Error fetching events:', error);
-        });
+    // Initialize calendar with dynamic event source
+    function initializeCalendar() {
+        fetch('/planner/get-events/')
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    editable: true,
+                    selectable: true,
 
-    const allDayCheckbox = document.getElementById('allDayCheckbox');
+                    eventContent: function (arg) {
+                        const elements = [];
+
+                        if (arg.event.extendedProps.is_friend) {
+                            // Container for image + tooltip
+                            const container = document.createElement('div');
+                            container.className = 'profile-thumbnail-container';
+
+                            // Image
+                            const img = document.createElement('img');
+                            img.src = arg.event.extendedProps.profile_image;
+                            img.className = 'event-profile-thumbnail';
+                            img.alt = arg.event.extendedProps.user;
+
+                            // Tooltip
+                            const tooltip = document.createElement('span');
+                            tooltip.className = 'profile-tooltip';
+                            tooltip.textContent = arg.event.extendedProps.user;
+
+                            container.appendChild(img);
+                            container.appendChild(tooltip);
+                            elements.push(container);
+                        }
+
+                        // Title
+                        const title = document.createElement('div');
+                        title.textContent = arg.event.title;
+                        elements.push(title);
+
+                        return { domNodes: elements };
+                    },
+
+                    events: data.events.map(event => ({
+                        id: event.id,
+                        title: event.title,
+                        start: event.start,
+                        end: event.end,
+                        extendedProps: {
+                            description: event.description || '',
+                            is_friend: event.is_friend,
+                            profile_image: event.profile_image,
+                            user: event.user
+                        }
+                    })),
+                    dateClick: info => openModal(null, info.dateStr),
+                    eventClick: info => openModal(info.event)
+                });
+                calendar.render();
+            })
+            .catch(error => console.error('Error fetching events:', error));
+    }
+
+    // initialize on page load
+    initializeCalendar();
 
     // Function to open the modal
     function openModal(event, dateStr) {
@@ -78,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // auto-disable time fields when "All-Day" is checked
-    allDayCheckbox.addEventListener('change', function() {
+    allDayCheckbox.addEventListener('change', function () {
         if (this.checked) {
             eventStart.type = 'date';
             eventEnd.type = 'date';
@@ -90,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Save event (Create/Update)
-    saveEventButton.addEventListener('click', function() {
+    saveEventButton.addEventListener('click', function () {
         const eventData = {
             id: eventId.value,
             title: eventTitle.value,
@@ -100,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Determine endpoint (add or edit)
-        const url = eventData.id 
+        const url = eventData.id
             ? `/planner/edit/${eventData.id}/`  // Match Django URL pattern
             : '/planner/add/';
 
@@ -112,37 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(eventData)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                console.log("Event saved successfully!");
-                calendar.removeAllEvents();
-                calendar.refetchEvents();  // Force refresh events from the server
-                eventModal.hide();
-            } else {
-                console.error('Server error:', data.errors || data.error); // Log form errors
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error); // Log network/parsing errors
-        });
-    });
-
-    // Delete event
-    deleteEventButton.addEventListener('click', function() {
-        if (confirm('Are you sure?')) {
-            fetch(`/planner/delete/${eventId.value}/`, {  // Match Django URL pattern
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -151,9 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
-                    calendar.removeAllEvents();
-                    calendar.refetchEvents();  // Force refresh events from server
+                    console.log("Event saved successfully!");
                     eventModal.hide();
+                    refreshCalendar();  // Ensure calendar fully refreshes
                 } else {
                     console.error('Server error:', data.errors || data.error); // Log form errors
                 }
@@ -161,6 +165,35 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Fetch error:', error); // Log network/parsing errors
             });
+    });
+
+    // Delete event
+    deleteEventButton.addEventListener('click', function () {
+        if (confirm('Are you sure?')) {
+            fetch(`/planner/delete/${eventId.value}/`, {  // Match Django URL pattern
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        eventModal.hide();
+                        refreshCalendar();  // Fully refresh calendar after deletion
+                    } else {
+                        console.error('Server error:', data.errors || data.error); // Log form errors
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error); // Log network/parsing errors
+                });
         }
     });
 
@@ -180,4 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 });
+
+
 

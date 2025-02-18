@@ -163,9 +163,63 @@ body {
 
 
 /* Planner */
-.fc-friend-event {
-    background-color: #6c757d !important;
-    border-color: #6c757d !important;
+
+.fc-event .event-profile-thumbnail {
+    width: 24px !important;        /* Force width */
+    height: 24px !important;       /* Force height */
+    border-radius: 50% !important; /* Circular shape */
+    object-fit: cover;             /* Prevent stretching */
+    margin-right: 8px;             /* Spacing between image and text */
+    display: inline-block;         /* Align with text */
+    vertical-align: middle;        /* Center vertically */
+}
+
+/* Optional: Add hover animation */
+.fc-event .event-profile-thumbnail:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Tooltip styling */
+.profile-thumbnail-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.profile-tooltip {
+    visibility: hidden;
+    background-color: rgba(0,0,0,0.8);
+    color: white;
+    text-align: center;
+    border-radius: 4px;
+    padding: 4px 8px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%; /* Position above the image */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.profile-thumbnail-container:hover .profile-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Arrow for tooltip */
+.profile-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.8) transparent transparent transparent;
 }
 
 /* Adjust theme toggle button margin for smaller screens */

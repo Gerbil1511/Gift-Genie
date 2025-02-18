@@ -90,15 +90,19 @@ def get_events(request):
         # Serialize events
         events = []
         for event in user_events.union(friends_events):
+             # Get profile image URL from MyAccount
+            if hasattr(event.user, 'myaccount') and event.user.myaccount.profile_image:
+                profile_image = event.user.myaccount.profile_image.url  # Cloudinary URL
+            else:
+                profile_image = '/static/images/nobody.jpg'  # Fallback image
             events.append({
                 'id': event.id,
                 'title': event.title,  # Match model
                 'start': event.start.isoformat(),
                 'end': event.end.isoformat() if event.end else None,
-                'color': '#3788d8' if event.user == request.user else '#6c757d',
+                'profile_image': profile_image,
                 'is_friend': event.user != request.user,  # Send friend status
-                'owner': event.user.username,  # Send event owner's name
-                'profile_image': event.user.profile.image.url if hasattr(event.user, 'profile') else None,  # Send profile pic
+                'user': event.user.username,  # Send event owner's name
         })
         return JsonResponse({'events': events})
     except Exception as e:
