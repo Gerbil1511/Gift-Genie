@@ -1,5 +1,4 @@
 
-
 /* Google Fonts import */
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
@@ -160,6 +159,13 @@ body {
 
 #theme-toggle:hover {
     transform: scale(1.1);
+}
+
+
+/* Planner */
+.fc-friend-event {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
 }
 
 /* Adjust theme toggle button margin for smaller screens */

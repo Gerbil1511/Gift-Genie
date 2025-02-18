@@ -161,6 +161,13 @@ body {
     transform: scale(1.1);
 }
 
+
+/* Planner */
+.fc-friend-event {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
 /* Adjust theme toggle button margin for smaller screens */
 @media (max-width: 768px) { /* Bootstrap's breakpoint for large devices */
     .navbar-nav .nav-item:last-child {

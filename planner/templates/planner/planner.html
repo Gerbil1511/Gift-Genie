@@ -1,124 +1,60 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container">
     <div class="app-container">
-        <h1 clas="main-title-text">My Events Planner</h1>
+        <h1 class="main-title-text">My Events Planner</h1>
         <div id="calendar-container">
             <div id="calendar"></div>
         </div>
     </div>
 </div>
+<!-- Modal for creating/editing events -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventModalLabel">Add/Edit Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <div class="mb-3">
+                        <label for="eventTitle" class="form-label">Event Title</label>
+                        <input type="text" class="form-control" id="eventTitle" required>
+                    </div>
+                    <div class="form-check mb-3">
+                        <label for="allDayCheckbox" class="form-check-label">All-Day</label>
+                        <input type="checkbox" class="form-check-input" id="allDayCheckbox">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventStart" class="form-label">Start Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="eventStart" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventEnd" class="form-label">End Date & Time</label>
+                        <input type="datetime-local" class="form-control" id="eventEnd">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="eventDescription" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" id="eventId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="deleteEvent">Delete</button>
+                <button type="button" class="btn btn-primary" id="saveEvent">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-{% block extra_body %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            selectable: true,
-            editable: true,
-            events: [
-                {% for event in user_events %}
-                {
-                id: '{{ event.id }}',
-                title: '{{ event.event_name }}',
-                start: '{{ event.event_date }}T{{ event.event_time }}',
-                description: '{{ event.description }}',
-                color: 'blue'
-            },
-            {% endfor %}
-                {% for event in friends_events %}
-    {
-        id: '{{ event.id }}',
-            title: '{{ event.user.username }}: {{ event.event_name }}',
-                start: '{{ event.event_date }}T{{ event.event_time }}',
-                    description: '{{ event.description }}',
-                        color: 'green'
-    },
-    {% endfor %}
-            ],
-    eventClick: function(info) {
-        var eventObj = info.event;
-        var title = prompt('Edit event title:', eventObj.title);
-        if (title) {
-            eventObj.setProp('title', title);
-            // Send AJAX request to update event in the backend
-            updateEvent(eventObj);
-        }
-    },
-    select: function(info) {
-        var title = prompt('Enter event title:');
-        if (title) {
-            var eventData = {
-                title: title,
-                start: info.startStr,
-                end: info.endStr
-            };
-            calendar.addEvent(eventData);
-            // Send AJAX request to add event to the backend
-            addEvent(eventData);
-        }
-        calendar.unselect();
-    },
-    eventDrop: function(info) {
-        // Send AJAX request to update event in the backend
-        updateEvent(info.event);
-    },
-    eventResize: function(info) {
-        // Send AJAX request to update event in the backend
-        updateEvent(info.event);
-    }
-        });
-    calendar.render();
 
-    function addEvent(eventData) {
-        fetch("{% url 'planner:add_event' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify(eventData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Event added successfully!');
-                } else {
-                    alert('Failed to add event.');
-                }
-            });
-    }
-
-    function updateEvent(event) {
-        fetch("{% url 'planner:edit_event' event_id=0 %}".replace('0', event.id), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-                title: event.title,
-                start: event.start.toISOString(),
-                end: event.end ? event.end.toISOString() : null
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Event updated successfully!');
-                } else {
-                    alert('Failed to update event.');
-                }
-            });
-    }
-    });
-</script>
+{% block scripts %}
+<!-- Link your custom JS file -->
+<script src="{% static 'js/planner.js' %}"></script>
 {% endblock %}
