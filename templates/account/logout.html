@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load allauth i18n %}
+{% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Sign Out" %}{% endblock head_title %}
 
@@ -14,10 +15,11 @@
     {% url 'account_logout' as action_url %}
     <form method="post" action="{% url 'account_logout' %}">
         {% csrf_token %}
-        <input type="hidden" name="next" value="{% url 'home' %}">
-        {{ form.as_p }}
-        <button type="submit" class="btn-log btn-rounded">{% trans "Logout" %}</button>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary  my-3 btn-rounded">{% trans "Logout" %}</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary mx-2 btn-rounded">{% trans "Cancel" %}</a>
     </form>
+   
 </div
 {% endblock content %}
 

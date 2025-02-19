@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 
 class Friendship(models.Model):
@@ -60,6 +61,13 @@ class Friendship(models.Model):
         if self.user == self.friend:
             raise ValidationError("A user cannot be friends with themselves.")
 
+        # Prevent duplicate friendships in reverse order
+        if Friendship.objects.filter(
+            Q(user=self.friend, friend=self.user) | Q(
+                user=self.user, friend=self.friend)
+        ).exists():
+            raise ValidationError("This friendship already exists.")
+
     def save(self, *args, **kwargs):
         """
         Saves the Friendship instance and ensures reciprocal friendship.
@@ -70,6 +78,7 @@ class Friendship(models.Model):
         """
         self.clean()
         super().save(*args, **kwargs)
+
         if self.confirmed:
             reciprocal, created = Friendship.objects.get_or_create(
                 user=self.friend,
@@ -77,6 +86,5 @@ class Friendship(models.Model):
                 defaults={'confirmed': True}
             )
             if not created and not reciprocal.confirmed:
-                reciprocal.confirmed = True
-                reciprocal.save()
-                
+                Friendship.objects.filter(id=reciprocal.id).update(confirmed=True)
+

@@ -8,7 +8,7 @@
     {% if user.is_authenticated %}
     <ul class="list-group">
         {% for friendship in friendships %}
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item  d-flex align-items-center">
             <a href="{% url 'friendsdetail' friendship.friend.id %}" class="d-flex align-items-center">
                 {% if friendship.friend.myaccount.profile_image %}
                 <img src="{{ friendship.friend.myaccount.profile_image.url }}" alt="{{ friendship.friend.username }}"
@@ -20,21 +20,15 @@
                 {% endif %}
                 <span>{{ friendship.friend.username }}</span>
             </a>
+            <form action="{% url 'remove_friend' friendship.friend.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm mx-3">
+                    Remove Friend
+                </button>
+            </form>
         </li>
         {% endfor %}
     </ul>
-
-    <!-- <form method="get" action="{% url 'friendslist' %}" class="w-100 mb-3">
-        <div class="input-group mb-3">
-            {{ form.search_query|as_crispy_field }}
-            <button type="button" id="search-button" class="btn btn-baby-blue">Search</button>
-        </div>
-        
-        <div id="search-results" class="mb-3"></div>
-        {{ form.friend_username|as_crispy_field }}
-        <button type="submit" class="btn btn-primary btn-log">Add Friend</button>
-    </form> -->
-
 
     <!-- Search Bar -->
     <form method="GET" action="{% url 'friendslist' %}" class="mb-3">

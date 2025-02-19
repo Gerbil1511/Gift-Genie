@@ -60,3 +60,17 @@ def confirm_friendship(request, friendship_id):
         friendship.save()
         return HttpResponseRedirect(reverse('friendslist'))
     return render(request, 'friendslist/confirm_friendship.html', {'friendship': friendship})
+
+@login_required
+def remove_friend(request, friend_id):
+    """
+    Removes a friendship between the logged-in user and the specified friend.
+    """
+    friend = get_object_or_404(User, id=friend_id)
+    
+    # Delete both directions of the friendship
+    Friendship.objects.filter(user=request.user, friend=friend).delete()
+    Friendship.objects.filter(user=friend, friend=request.user).delete()
+    
+    messages.success(request, f"You have removed {friend.username} from your friends.")
+    return redirect('friendslist')  # Change to your actual friends list page name

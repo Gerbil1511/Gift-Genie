@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     {% trans "Login" %}
@@ -10,8 +11,8 @@
     <h1>{% trans "Login" %}</h1>
     <form method="post" action="{% url 'account_login' %}">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-log btn-rounded">{% trans "Login" %}</button>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary mb-3 btn-rounded">{% trans "Login" %}</button>
     </form>
     <p>{% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a></p>
 </div>
