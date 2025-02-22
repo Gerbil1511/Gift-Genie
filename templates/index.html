@@ -1,32 +1,36 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}Gift Box{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/gift-box.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center bg-gradient-light">
-    <!-- Animated Title -->
-    <h1 class="display-1 fw-bold text-center text-primary animate-float">
-        Gift Genie
-    </h1>
-
-    <!-- Subtitle -->
-    <p class="mt-4 fs-4 text-center text-white animate-pulse">
-        Start your gift-giving journey today!
-    </p>
-
-    <!-- Call-to-Action Button -->
-    <a href="{% url 'account_login' %}" class="mt-5 btn btn-lg btn-light text-primary fw-bold rounded-pill animate-pulse">
-        Get Started
-    </a>
-
-    <div class="gift-container">
-        <div class="shadow"></div>
+<div class="gift-container min-height-100">
+    <div class="shadow"></div>
         <div class="gift-box">
-            <div class="click">
-                <div class="box-bowtie">
-                </div>
+            <div class="lid">
+                <div class="bow"></div>
             </div>
-            <div class="surprise"></div>
+            <div class="surprise">
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+            </div>
         </div>
     </div>
+    <div class="text d-flex flex-column align-items-center">
+        <a href="{% url 'account_login' %}" class="mt-5 btn btn-lg btn-light text-primary fw-bold rounded-pill pulse">
+            Start your gift-giving journey today!
+        </a>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/gift-box.js' %}"></script>
 {% endblock %}
